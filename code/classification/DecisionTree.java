@@ -4,7 +4,8 @@ import java.util.ArrayList;
 public class DecisionTree {
     private String trainingFile;
     private String testFile;
-    private ArrayList<DataInstance> instances;
+    private ArrayList<DataInstance> trainingInstances;
+    private ArrayList<DataInstance> testingInstances;
 
     public DecisionTree(String trainingFile, String testFile) {
         System.out.println("Training File: " + trainingFile);
@@ -13,7 +14,7 @@ public class DecisionTree {
         this.testFile     = testFile;
         instances         = new ArrayList<DataInstance>();
         readTrainingFile();
-        printInstances();
+        //printInstances();
     }
 
     private void readTrainingFile() {
