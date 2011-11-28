@@ -5,21 +5,26 @@ public class DecisionTree {
     private String trainingFile;
     private String testFile;
     private ArrayList<DataInstance> trainingInstances;
-    private ArrayList<DataInstance> testingInstances;
+    private ArrayList<DataInstance> testInstances;
 
     public DecisionTree(String trainingFile, String testFile) {
         System.out.println("Training File: " + trainingFile);
         System.out.println("Test File: " + testFile);
         this.trainingFile = trainingFile;
         this.testFile     = testFile;
-        instances         = new ArrayList<DataInstance>();
-        readTrainingFile();
-        //printInstances();
+        trainingInstances = new ArrayList<DataInstance>();
+        testInstances     = new ArrayList<DataInstance>();
+        readFile(trainingFile, trainingInstances);
+        readFile(testFile, testInstances);
+
+        // Debuging print outs
+        //printInstances(trainingInstances);
+        //printInstances(testInstances);
     }
 
-    private void readTrainingFile() {
+    private void readFile(String fileName, ArrayList<DataInstance> instances) {
         try {
-            FileInputStream fstream = new FileInputStream(trainingFile);
+            FileInputStream fstream = new FileInputStream(fileName);
             DataInputStream in      = new DataInputStream(fstream);
             BufferedReader br       = new BufferedReader(new InputStreamReader(in));
             String strLine;
@@ -38,7 +43,7 @@ public class DecisionTree {
         }
     }
 
-    public void printInstances() {
+    public void printInstances(ArrayList<DataInstance> instances) {
         for (DataInstance di : instances) {
             System.out.println(
                 "label: " + di.getLabel() + " attributes: " + di.getAttributes());
