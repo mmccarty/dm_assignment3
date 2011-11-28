@@ -1,5 +1,7 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
 public class DecisionTree {
     private String trainingFile;
@@ -20,6 +22,9 @@ public class DecisionTree {
         // Debuging print outs
         //printInstances(trainingInstances);
         //printInstances(testInstances);
+
+        Node root = generateDecisionTree(trainingInstances
+                                       , trainingInstances.get(0).getAttributeList());
     }
 
     private void readFile(String fileName, ArrayList<DataInstance> instances) {
@@ -41,6 +46,46 @@ public class DecisionTree {
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
         }
+    }
+
+    private Node generateDecisionTree(ArrayList<DataInstance> instances
+                                    , ArrayList<Integer> attributeList) {
+        Node n = new Node();
+        n.setInstances(instances);
+        if (n.instancesOfSameLabel()) {
+            return n;
+        }
+        if (attributeList.isEmpty()) {
+            n.setMajorityLabel();
+            return n;
+        }
+
+        HashMap<String, Object> splitCriterion = selectAttribute(instances, attributeList);
+        n.setLabel(splitCriterion.get("attribute").toString());
+        if (splitCriterion.get("discrete").toString() == "true" && splitCriterion.get("multiway").toString() == "true"){
+            attributeList = removeSplit(attributeList, splitCriterion.get("attribute"));
+        }
+        HashMap<String, ArrayList<DataInstance>> partitions = partitionInstances(
+               splitCriterion, instances);
+        Set<String> labels = partitions.keySet();
+        ArrayList<DataInstance> splitInstances;
+        Node leaf;
+        Node branch;
+        for (Object l : labels) {
+            splitInstances = partitions.get(l);
+            branch = new Node();
+            branch.setLabel(l.toString());
+            if (splitInstances.isEmpty()) {
+                leaf = new Node();
+                leaf.setInstances(instances);
+                leaf.setMajorityLabel();
+                branch.addChild(leaf);
+            } else {
+                branch.addChild(generateDecisionTree(splitInstances, attributeList));
+            }
+            n.addChild(branch);
+        }
+        return n;
     }
 
     public void printInstances(ArrayList<DataInstance> instances) {
