@@ -17,4 +17,8 @@ public class DataInstance{
     public ArrayList<Integer> getAttributes() {
         return attributes;
     }
+
+    public ArrayList<Integer> getAttributeList() {
+        return new ArrayList<Integer>();
+    }
 }
