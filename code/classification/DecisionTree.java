@@ -8,6 +8,7 @@ public class DecisionTree {
     private String testFile;
     private ArrayList<DataInstance> trainingInstances;
     private ArrayList<DataInstance> testInstances;
+    private HashMap<Integer, ArrayList<DataInstance>> selectedInstances;
 
     public DecisionTree(String trainingFile, String testFile) {
         System.out.println("Training File: " + trainingFile);
@@ -61,18 +62,18 @@ public class DecisionTree {
         }
 
         HashMap<String, Object> splitCriterion = selectAttribute(instances, attributeList);
+
         n.setLabel(splitCriterion.get("attribute").toString());
-        if (splitCriterion.get("discrete").toString() == "true" && splitCriterion.get("multiway").toString() == "true"){
-            attributeList = removeSplit(attributeList, splitCriterion.get("attribute"));
+        if (splitCriterion.get("discrete").toString() == "true" && 
+            splitCriterion.get("multiway").toString() == "true" ){
+            attributeList.remove((Integer) splitCriterion.get("attribute"));
         }
-        HashMap<String, ArrayList<DataInstance>> partitions = partitionInstances(
-               splitCriterion, instances);
-        Set<String> labels = partitions.keySet();
+        Set<Integer> labels = selectedInstances.keySet();
         ArrayList<DataInstance> splitInstances;
         Node leaf;
         Node branch;
-        for (Object l : labels) {
-            splitInstances = partitions.get(l);
+        for (Integer l : labels) {
+            splitInstances = selectedInstances.get(l);
             branch = new Node();
             branch.setLabel(l.toString());
             if (splitInstances.isEmpty()) {
@@ -86,6 +87,33 @@ public class DecisionTree {
             n.addChild(branch);
         }
         return n;
+    }
+
+    private HashMap<String, Object> selectAttribute(ArrayList<DataInstance> instances
+                                                  , ArrayList<Integer> attributeList) {
+        Double info_d = Utilities.infoGain(instances);
+        System.out.println(info_d);
+        ArrayList<Double> info_attrs = new ArrayList<Double>();
+        ArrayList<Double> gain       = new ArrayList<Double>();
+        double info_a;
+        ArrayList<HashMap<Integer, ArrayList<DataInstance>>> instances_k = 
+                     new ArrayList<HashMap<Integer, ArrayList<DataInstance>>>();
+        for (Integer attr : attributeList) {
+            info_a = Utilities.infoGainAttr(attr, instances);
+            instances_k.add(Utilities.getInstancesK());
+            info_attrs.add(info_a);
+            gain.add(info_d - info_a);
+        }
+        double max_gain = Utilities.getMax(gain);
+        //System.out.println(max_gain);
+        //System.out.println(gain);
+        Integer attr = gain.indexOf(max_gain);
+        HashMap<String, Object> choice = new HashMap<String, Object>();
+        choice.put("attribute", attr);
+        choice.put("discrete", "true");
+        choice.put("multiway", "true");
+        selectedInstances = instances_k.get(attr);
+        return choice;
     }
 
     public void printInstances(ArrayList<DataInstance> instances) {

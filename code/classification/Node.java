@@ -49,21 +49,11 @@ public class Node{
         //System.out.println("Majority Label tally:");
         //System.out.println(tally);
         ArrayList<Integer> counts = new ArrayList<Integer>(tally.values());
-        Integer max = getMax(counts);
+        Integer max = Utilities.getMax(counts);
         //System.out.println(max);
         String label = new ArrayList<String>(tally.keySet()).get(counts.indexOf(max));
         //System.out.println(label);
         setLabel(label);
-    }
-
-    private Integer getMax(ArrayList<Integer>counts) {
-        Integer maxValue = counts.get(0);
-        for (Integer value : counts){
-            if(value > maxValue) {
-                maxValue = value;
-            }
-        }
-        return maxValue;
     }
 
     private HashMap<String, Integer> tallyLabelCount(){

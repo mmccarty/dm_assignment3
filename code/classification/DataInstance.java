@@ -19,6 +19,10 @@ public class DataInstance{
     }
 
     public ArrayList<Integer> getAttributeList() {
-        return new ArrayList<Integer>();
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        for (Integer i = 0; i < attributes.size(); i++) {
+            list.add(i);
+        }
+        return list;
     }
 }
