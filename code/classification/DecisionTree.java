@@ -10,24 +10,52 @@ public class DecisionTree {
     private ArrayList<DataInstance> testInstances;
     private HashMap<Integer, ArrayList<DataInstance>> selectedInstances;
     private SelectionMethod selectionMethod;
+    private Node root;
 
-    public DecisionTree(String trainingFile, String testFile, SelectionMethod selectionMethod) {
+    public DecisionTree(SelectionMethod selectionMethod) {
+        this.selectionMethod = selectionMethod;
+    }
+
+    public void setTestInstances(ArrayList<DataInstance> instances) {
+        testInstances = instances;
+    }
+
+    public void setTrainingInstances(ArrayList<DataInstance> instances) {
+        trainingInstances = instances;
+    }
+
+    public Node getRoot() {
+        return root;
+    }
+
+    public void classifyFromFiles(String trainingFile, String testFile) {
+        loadData(trainingFile, testFile);
+        trainClassifier();
+        classifyTestData();
+    }
+
+    private void loadData(String trainingFile, String testFile) {
         System.out.println("Training File: " + trainingFile);
         System.out.println("Test File: " + testFile);
         this.trainingFile = trainingFile;
         this.testFile     = testFile;
-        this.selectionMethod = selectionMethod;
         trainingInstances = new ArrayList<DataInstance>();
         testInstances     = new ArrayList<DataInstance>();
-        readFile(trainingFile, trainingInstances);
-        readFile(testFile, testInstances);
+        trainingInstances = readFile(trainingFile, trainingInstances);
+        testInstances     = readFile(testFile, testInstances);
 
         // Debuging print outs
         //printInstances(trainingInstances);
         //printInstances(testInstances);
+    }
 
-        Node root = generateDecisionTree(trainingInstances
-                                       , trainingInstances.get(0).getAttributeList());
+    public void trainClassifier(ArrayList<Integer> attributeList) {
+        root = generateDecisionTree(trainingInstances, attributeList);
+    }
+
+    public void trainClassifier(){
+        root = generateDecisionTree(trainingInstances
+                                  , trainingInstances.get(0).getAttributeList());
         
         /*
         System.out.println("Root label: " + root.getLabel());
@@ -41,12 +69,16 @@ public class DecisionTree {
             }
         }
         */
+    }
+
+    public void classifyTestData() {
 
         HashMap<String, Integer> results = classifyTestData(root, testInstances);
         System.out.println("Results:\n" + results);
         for (Integer r : new ArrayList<Integer>(results.values())){
             System.out.println(r);
         }
+        Utilities.evaluateModel(results);
     }
 
     private HashMap<String, Integer> classifyTestData(Node classifier
@@ -82,7 +114,7 @@ public class DecisionTree {
         return results;
     }
 
-    private String classify(Node classifier, DataInstance tuple) {
+    public String classify(Node classifier, DataInstance tuple) {
         Integer value = tuple.getAttributes().get(Integer.parseInt(classifier.getLabel()));
         for (Node branch : classifier.getChildren()){
             if (Integer.parseInt(branch.getLabel()) == value) {
@@ -97,7 +129,7 @@ public class DecisionTree {
         return "Error";
     }
 
-    private void readFile(String fileName, ArrayList<DataInstance> instances) {
+    public ArrayList<DataInstance> readFile(String fileName, ArrayList<DataInstance> instances) {
         try {
             FileInputStream fstream = new FileInputStream(fileName);
             DataInputStream in      = new DataInputStream(fstream);
@@ -116,6 +148,7 @@ public class DecisionTree {
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
         }
+        return instances;
     }
 
     private Node generateDecisionTree(ArrayList<DataInstance> instances
@@ -174,6 +207,7 @@ public class DecisionTree {
     }
 
     public static void main(String[] args) {
-        DecisionTree dt = new DecisionTree(args[0], args[1], new InformationGain());
+        DecisionTree dt = new DecisionTree(new InformationGain());
+        dt.classifyFromFiles(args[0], args[1]);
     }
 }
