@@ -17,8 +17,24 @@ public class Node{
         this.label  = label;
     }
 
+    public String getLabel() {
+        return label;
+    } 
+
+    public Node getParent() {
+        return parent;
+    }
+
+    public ArrayList<Node> getChildren() {
+        return children;
+    }
+
     public void setParent(Node parent) {
         this.parent = parent;
+    }
+
+    public boolean isLeaf() {
+        return children.size() == 0;
     }
 
     public void setInstances(ArrayList<DataInstance> instances) {

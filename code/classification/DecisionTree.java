@@ -26,6 +26,73 @@ public class DecisionTree {
 
         Node root = generateDecisionTree(trainingInstances
                                        , trainingInstances.get(0).getAttributeList());
+        
+        /*
+        System.out.println("Root label: " + root.getLabel());
+        System.out.println("Root parent: " + root.getParent());
+        System.out.println("Number of root children: " + root.getChildren().size());
+        for (Node branch : root.getChildren()) {
+            System.out.println("\t" + branch.getLabel() + " # Branches: " + branch.getChildren().size());
+            for (Node child : branch.getChildren()) {
+                System.out.println("\t\t" + child.getLabel());
+                System.out.println("\t\t" + child.getChildren().size());
+            }
+        }
+        */
+
+        HashMap<String, Integer> results = classifyTestData(root, testInstances);
+        System.out.println("Results:\n" + results);
+        for (Integer r : new ArrayList<Integer>(results.values())){
+            System.out.println(r);
+        }
+    }
+
+    private HashMap<String, Integer> classifyTestData(Node classifier
+                                                    , ArrayList<DataInstance> instances){
+        String result;
+        String label;
+        String outcome;
+        HashMap<String, Integer> results = new HashMap<String, Integer>();
+        results.put("true positive", 0);
+        results.put("false negative", 0);
+        results.put("false positive", 0);
+        results.put("true negative", 0);
+        for (DataInstance di : instances) {
+            result = classify(classifier, di);
+            label  = di.getLabel();
+            //System.out.println(label + " = " + result);
+            di.setClassifierResult(result);
+            if (label.equals("+1")) {
+                if (result.equals("+1")) {
+                    outcome = "true positive";
+                } else {
+                    outcome = "false negative";
+                }
+            } else {
+                if (result.equals("-1")) {
+                    outcome = "true negative";
+                } else {
+                    outcome = "false positive";
+                }
+            }
+            results.put(outcome, results.get(outcome) + 1);
+        }
+        return results;
+    }
+
+    private String classify(Node classifier, DataInstance tuple) {
+        Integer value = tuple.getAttributes().get(Integer.parseInt(classifier.getLabel()));
+        for (Node branch : classifier.getChildren()){
+            if (Integer.parseInt(branch.getLabel()) == value) {
+                Node child = branch.getChildren().get(0);
+                if (child.isLeaf()) {
+                    return child.getLabel();
+                } else {
+                    return classify(child, tuple);
+                }
+            }
+        }
+        return "Error";
     }
 
     private void readFile(String fileName, ArrayList<DataInstance> instances) {
@@ -51,12 +118,15 @@ public class DecisionTree {
 
     private Node generateDecisionTree(ArrayList<DataInstance> instances
                                     , ArrayList<Integer> attributeList) {
+        //System.out.println(attributeList);
         Node n = new Node();
         n.setInstances(instances);
         if (n.instancesOfSameLabel()) {
+            //System.out.println("same instances");
             return n;
         }
         if (attributeList.isEmpty()) {
+            //System.out.println("attribute list empty");
             n.setMajorityLabel();
             return n;
         }
@@ -74,6 +144,9 @@ public class DecisionTree {
         Node branch;
         for (Integer l : labels) {
             splitInstances = selectedInstances.get(l);
+            if (splitInstances == null) {
+                splitInstances = new ArrayList<DataInstance>();
+            }
             branch = new Node();
             branch.setLabel(l.toString());
             if (splitInstances.isEmpty()) {
@@ -92,7 +165,7 @@ public class DecisionTree {
     private HashMap<String, Object> selectAttribute(ArrayList<DataInstance> instances
                                                   , ArrayList<Integer> attributeList) {
         Double info_d = Utilities.infoGain(instances);
-        System.out.println(info_d);
+        //System.out.println(info_d);
         ArrayList<Double> info_attrs = new ArrayList<Double>();
         ArrayList<Double> gain       = new ArrayList<Double>();
         double info_a;

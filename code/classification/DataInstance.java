@@ -4,6 +4,7 @@ public class DataInstance{
 
     private ArrayList<Integer> attributes;
     private String label;
+    private String classifierResult;
 
     public DataInstance(String label, ArrayList<Integer> attributes){
         this.attributes = attributes;
@@ -24,5 +25,13 @@ public class DataInstance{
             list.add(i);
         }
         return list;
+    }
+
+    public void setClassifierResult(String result){
+        classifierResult = result;
+    }
+
+    public String getClassificerResult() {
+        return classifierResult;
     }
 }
