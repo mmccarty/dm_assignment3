@@ -28,9 +28,10 @@ public class RandomForest {
 
         HashMap<String, Integer> results = classifyTestData(testInstances);
         //System.out.println("Results:\n" + results);
-        for (Integer r : new ArrayList<Integer>(results.values())){
-            System.out.println(r);
-        }
+        System.out.println(results.get("true positive"));
+        System.out.println(results.get("false negative"));
+        System.out.println(results.get("false positive"));
+        System.out.println(results.get("true negative"));
 
         //Utilities.evaluateModel(results);
     }
