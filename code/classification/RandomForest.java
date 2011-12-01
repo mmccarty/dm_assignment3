@@ -1,3 +1,5 @@
+package classification;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -25,12 +27,12 @@ public class RandomForest {
         }
 
         HashMap<String, Integer> results = classifyTestData(testInstances);
-        System.out.println("Results:\n" + results);
+        //System.out.println("Results:\n" + results);
         for (Integer r : new ArrayList<Integer>(results.values())){
             System.out.println(r);
         }
 
-        Utilities.evaluateModel(results);
+        //Utilities.evaluateModel(results);
     }
     
     private HashMap<String, Integer> classifyTestData(ArrayList<DataInstance> testInstances) {

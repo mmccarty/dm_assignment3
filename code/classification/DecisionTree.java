@@ -1,3 +1,5 @@
+package classification;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,8 +37,8 @@ public class DecisionTree {
     }
 
     private void loadData(String trainingFile, String testFile) {
-        System.out.println("Training File: " + trainingFile);
-        System.out.println("Test File: " + testFile);
+        //System.out.println("Training File: " + trainingFile);
+        //System.out.println("Test File: " + testFile);
         this.trainingFile = trainingFile;
         this.testFile     = testFile;
         trainingInstances = new ArrayList<DataInstance>();
@@ -74,11 +76,11 @@ public class DecisionTree {
     public void classifyTestData() {
 
         HashMap<String, Integer> results = classifyTestData(root, testInstances);
-        System.out.println("Results:\n" + results);
+        //System.out.println("Results:\n" + results);
         for (Integer r : new ArrayList<Integer>(results.values())){
             System.out.println(r);
         }
-        Utilities.evaluateModel(results);
+        //Utilities.evaluateModel(results);
     }
 
     private HashMap<String, Integer> classifyTestData(Node classifier
