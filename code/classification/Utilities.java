@@ -58,10 +58,10 @@ public class Utilities {
         double fScore      = (double) (2 * precision * recall) / (precision + recall);
 
         System.out.println("Accuracy: " + accuracy);
-        System.out.println("errorRate: " + errorRate);
-        System.out.println("sensitivity: " + sensitivity);
-        System.out.println("specificity: " + specificity);
-        System.out.println("precision: " + precision);
+        System.out.println("Error Rate: " + errorRate);
+        System.out.println("Sensitivity: " + sensitivity);
+        System.out.println("Specificity: " + specificity);
+        System.out.println("Precision: " + precision);
         System.out.println("F-1 Score: " + fScore);
         System.out.println("F-beta Score (0.5): " + fBeta(0.5, precision, recall));
         System.out.println("F-beta Score (2.0): " + fBeta(2.0, precision, recall));

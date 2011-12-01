@@ -33,7 +33,7 @@ public class RandomForest {
         System.out.println(results.get("false positive"));
         System.out.println(results.get("true negative"));
 
-        //Utilities.evaluateModel(results);
+        Utilities.evaluateModel(results);
     }
     
     private HashMap<String, Integer> classifyTestData(ArrayList<DataInstance> testInstances) {
@@ -102,9 +102,9 @@ public class RandomForest {
         ArrayList<Integer> sampleAttrs= new ArrayList<Integer>();
         Random r = new Random();
         int pick;
-        int numOfAttrs = (int) (attributeList.size() * .3);
+        int numOfAttrs = (int) (attributeList.size() * .7);
         for (int i = 0; i < numOfAttrs; i++) {
-            pick = r.nextInt(numOfAttrs);
+            pick = r.nextInt(attributeList.size());
             sampleAttrs.add(attributeList.get(pick));
             attributeList.remove(pick);
         }

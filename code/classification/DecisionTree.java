@@ -81,7 +81,7 @@ public class DecisionTree {
         System.out.println(results.get("false negative"));
         System.out.println(results.get("false positive"));
         System.out.println(results.get("true negative"));
-        //Utilities.evaluateModel(results);
+        Utilities.evaluateModel(results);
     }
 
     private HashMap<String, Integer> classifyTestData(Node classifier
